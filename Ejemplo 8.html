@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo 8</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label, button {
+            display: block;
+            margin: 10px 0;
+        }
+        .probabilidades input {
+            margin: 5px 0;
+            display: block;
+        }
+        .resultados {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ejemplo 8. Determinar por medio de un programa, la distribución acumulada de probabilidad para X, siendo
+        ésta una variable aleatoria que representa el número defectos por cada 10 yardas de una tela sintética en
+        rollos continuos de ancho uniforme. Suponer que x = 0, 1, 2, 3, 4, 5; y que se toman 100 muestras.</h1>
+
+    <label for="num-simulaciones">Introduzca el número de simulaciones a efectuar:</label>
+    <input type="number" id="num-simulaciones" min="1" value="100">
+
+    <label for="num-eventos">Introduzca el número de eventos (máximo 100):</label>
+    <input type="number" id="num-eventos" min="1" max="100" value="3">
+
+    <button onclick="generarCamposProbabilidades()">Configurar Probabilidades</button>
+
+    <div id="probabilidades-container"></div>
+    <button onclick="calcularSimulaciones()">Calcular Simulaciones</button>
+
+    <div class="resultados">
+        <h2>Resultados:</h2>
+        <p id="resultados"></p>
+    </div>
+
+    <script>
+        const NORM = 10000;
+        const SUMA = 487;
+        const MULT = 4441;
+
+        function generarCamposProbabilidades() {
+            const numEventos = parseInt(document.getElementById("num-eventos").value);
+            const container = document.getElementById("probabilidades-container");
+            container.innerHTML = "";
+
+            if (numEventos <= 0 || numEventos > 100) {
+                alert("El número de eventos debe estar entre 1 y 100.");
+                return;
+            }
+
+            container.innerHTML = "<h3>Ingrese las probabilidades (deben sumar 1):</h3>";
+            for (let i = 0; i < numEventos; i++) {
+                container.innerHTML += `
+                    <label>Probabilidad ${i + 1}:</label>
+                    <input type="number" id="prob-${i}" step="0.01" min="0" max="1" value="0.1">
+                `;
+            }
+        }
+
+        function calcularSimulaciones() {
+            const MAX = parseInt(document.getElementById("num-simulaciones").value);
+            const N = parseInt(document.getElementById("num-eventos").value);
+
+            if (N <= 0 || N > 100) {
+                alert("El número de eventos debe estar entre 1 y 100.");
+                return;
+            }
+
+            let P = [];
+            let SUM = [];
+            for (let i = 0; i < N; i++) {
+                const prob = parseFloat(document.getElementById(`prob-${i}`).value);
+                if (isNaN(prob) || prob < 0 || prob > 1) {
+                    alert(`La probabilidad ${i + 1} debe ser un número entre 0 y 1.`);
+                    return;
+                }
+                P.push(prob);
+            }
+
+            const sumaProbabilidades = P.reduce((acc, prob) => acc + prob, 0);
+            if (Math.abs(sumaProbabilidades - 1) > 0.0001) {
+                alert("La suma de las probabilidades debe ser exactamente 1.");
+                return;
+            }
+
+            SUM[0] = P[0];
+            for (let i = 1; i < N; i++) {
+                SUM[i] = SUM[i - 1] + P[i];
+            }
+
+            let SEM = 23;
+            let resultados = "";
+
+            for (let j = 1; j <= MAX; j++) {
+                SEM = (MULT * SEM + SUMA) % NORM;
+                const RND = SEM / NORM;
+
+                let I = 0;
+                while (RND >= SUM[I]) {
+                    I++;
+                }
+
+                resultados += `Simulación ${j}: El valor más pequeño es SUM[${I}] = ${SUM[I].toFixed(4)}<br>`;
+            }
+
+            document.getElementById("resultados").innerHTML = resultados;
+        }
+    </script>
+</body>
+</html>

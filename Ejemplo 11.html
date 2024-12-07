@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo 11</title>
+</head>
+<body>
+    <h1>Ejemplo 11</h1>
+    <form id="simulacionForm">
+        <label for="numSimulaciones">Número de simulaciones:</label>
+        <input type="number" id="numSimulaciones" min="1" required>
+        <br><br>
+        <label for="probabilidadP">Probabilidad P (entre 0 y 1):</label>
+        <input type="number" id="probabilidadP" step="0.01" min="0" max="1" required>
+        <br><br>
+        <button type="button" onclick="iniciarSimulacion()">Iniciar Simulación</button>
+    </form>
+
+    <h2>Resultados</h2>
+    <div id="resultados"></div>
+
+    <script>
+        function iniciarSimulacion() {
+            const NORM = 10000;
+            const SUMA = 4857;
+            const MULT = 8601;
+
+            const MAX = parseInt(document.getElementById('numSimulaciones').value);
+            const P = parseFloat(document.getElementById('probabilidadP').value);
+            const resultadosDiv = document.getElementById('resultados');
+
+            if (isNaN(MAX) || MAX <= 0) {
+                alert('Por favor, introduzca un número válido de simulaciones.');
+                return;
+            }
+            if (isNaN(P) || P < 0 || P > 1) {
+                alert('Por favor, introduzca una probabilidad válida entre 0 y 1.');
+                return;
+            }
+
+            const Q = 1 - P; 
+            let SEM = 36; 
+            let resultados = '<ul>';
+
+          
+            for (let J = 1; J <= MAX; J++) {
+                SEM = (MULT * SEM + SUMA) % NORM; 
+                let RND = SEM / NORM; 
+                let PROB = P; 
+                let SUM = P; 
+                let I = 1;
+
+                while (RND >= SUM) {
+                    PROB *= Q; 
+                    SUM += PROB; 
+                    I++;
+                }
+
+                resultados += `<li>El tiempo de espera para la simulación #${J} es: ${I}</li>`;
+            }
+
+            resultados += '</ul>';
+            resultadosDiv.innerHTML = resultados;
+        }
+    </script>
+</body>
+</html>

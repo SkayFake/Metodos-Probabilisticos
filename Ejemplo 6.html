@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo 6</title>
+    <style>
+        input, button {
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ejemplo 6. Se lanzan aleatoriamente 3 pelotas dentro de 5 recipientes. ¿Cuál es la probabilidad de que
+        caigan en diferente recipiente?</h1>
+    <label for="max-ensayos">Número de ensayos:</label>
+    <input type="number" id="max-ensayos" min="1" value="100">
+    <button onclick="calcularProbabilidad()">Calcular Probabilidad</button>
+    
+    <h2>Resultados:</h2>
+    <label id="resultados"></label>
+
+    <h3>Probabilidad Exacta: <span id="probabilidad-exacta"></span></h3>
+    <h3>Probabilidad Simulada: <span id="probabilidad-simulada"></span></h3>
+
+    <script>
+        function calcularProbabilidad() {
+            const NORM = 10000;
+            const SUMA = 4299;
+            const MULT = 7401;
+            const recipientes = 5;
+            const bolas = 3;
+            let SEM = 0;
+            let SUM = 0;
+            let probabilidad = 0;
+            const REC = [0, 0, 0, 0]; 
+
+            const MAX = parseInt(document.getElementById("max-ensayos").value);
+            let resultadosTexto = "";
+
+            for (let i = 1; i <= MAX; i++) {
+                for (let j = 1; j <= bolas; j++) {
+                    SEM = (MULT * SEM + SUMA) % NORM;
+                    const RND = SEM / NORM;
+                    REC[j] = Math.floor(recipientes * RND) + 1; 
+                }
+
+                
+                if (REC[1] !== REC[2] && REC[1] !== REC[3] && REC[2] !== REC[3]) {
+                    SUM++;
+                }
+
+                resultadosTexto += `Ensayo ${i}: Recipiente 1 = ${REC[1]}, Recipiente 2 = ${REC[2]}, Recipiente 3 = ${REC[3]}. Caso favorable: ${REC[1] !== REC[2] && REC[1] !== REC[3] && REC[2] !== REC[3] ? "Sí" : "No"}<br>`;
+            }
+
+            probabilidad = SUM / MAX;
+
+          
+            const permutaciones = recipientes * (recipientes - 1) * (recipientes - 2);
+            const totalDistribuciones = Math.pow(recipientes, bolas);
+            const probabilidadExacta = permutaciones / totalDistribuciones;
+
+           
+            document.getElementById("resultados").innerHTML = resultadosTexto;
+            document.getElementById("probabilidad-exacta").textContent = probabilidadExacta.toFixed(4);
+            document.getElementById("probabilidad-simulada").textContent = probabilidad.toFixed(4);
+            alert(`Casos favorables: ${SUM}\nTotal de ensayos: ${MAX}`);
+        }
+    </script>
+</body>
+</html>
+

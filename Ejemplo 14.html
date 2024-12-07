@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo 14</title>
+</head>
+<body>
+    <h1>Ejemplo 14</h1>
+    <button onclick="calcularValorEsperado()">Calcular</button>
+    <h2>Resultados</h2>
+    <div id="resultados"></div>
+    <script>
+        function calcularValorEsperado() {
+            const NORM = 10000;
+            const SUMA = 4857;
+            const MULT = 8601;
+            let SEM = 0; 
+            let SUM = 0.0; 
+            const iteraciones = 100; 
+            const resultadosDiv = document.getElementById('resultados');
+            let resultados = '<ul>';
+
+            for (let I = 1; I <= iteraciones; I++) {
+                SEM = (MULT * SEM + SUMA) % NORM; 
+                const RND = SEM / NORM; 
+                const X = 1 / Math.sqrt(1 - RND); 
+                
+                resultados += `<li>Iteración ${I}: X = ${X.toFixed(4)}</li>`;
+                SUM += X; 
+            }
+
+            const valorEsperado = SUM / iteraciones; 
+            resultados += `</ul><p><strong>VALOR ESPERADO:</strong> ${valorEsperado.toFixed(4)}</p>`;
+            resultadosDiv.innerHTML = resultados;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo 5</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ejemplo 5. Escribir un programa para generar 1000 números aleatorios en [0, 1].</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Índice</th>
+                <th>Semilla Generada</th>
+                <th>Numero Aleatorio</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-seed">
+        </tbody>
+    </table>
+
+    <script>
+
+        function generarSemillas() {
+            const NORM = 1000;
+            const SUMA = 4857;
+            const MULT = 8601;
+            let SEM = 2;
+            const datos = [];
+            
+            for (let i = 0; i <= 999; i++) {
+                SEM = ((MULT * SEM) + SUMA) % NORM;
+                let RND = SEM / NORM;
+                datos.push({ semilla: SEM, rnd: RND }); 
+            }
+
+            return datos;
+        }
+
+        function mostrarSemillas() {
+            const datos = generarSemillas();
+            const tabla = document.getElementById("tabla-seed");
+
+            datos.forEach((item, index) => {
+                const fila = document.createElement("tr");
+                const celdaIndice = document.createElement("td");
+                const celdaSemilla = document.createElement("td");
+                const celdaNumeroAleatorio= document.createElement("td");
+
+                celdaIndice.textContent = index;
+                celdaSemilla.textContent = item.semilla.toFixed(2); 
+                celdaNumeroAleatorio.textContent = item.rnd.toFixed(4); 
+
+                fila.appendChild(celdaIndice);
+                fila.appendChild(celdaSemilla);
+                fila.appendChild(celdaNumeroAleatorio);
+                tabla.appendChild(fila);
+            });
+        }
+
+      
+        mostrarSemillas();
+    </script>
+</body>
+</html>

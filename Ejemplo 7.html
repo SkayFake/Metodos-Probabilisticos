@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo 7</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ejemplo 7. Use el método utilizado para simular 1000 lanzamientos de un dado regular.</h1>
+    <button onclick="calcularLanzamientos()">Calcular Lanzamientos</button>
+    <h2>Resultados:</h2>
+    <label id="resultados"></label>
+
+    <script>
+        function calcularLanzamientos() {
+            const NORM = 10000;
+            const SUMA = 1877;
+            const MULT = 6561;
+
+            
+            let SEM = 72; 
+            let i = 1; 
+            let RND; 
+
+            for (let j = 1; j <= 1000; j++) {
+                SEM = (MULT * SEM + SUMA) % NORM; 
+                RND = SEM / NORM; 
+
+             
+                if (RND >= 1.0 / 6.0) {
+                    i++; 
+                }
+            }
+
+            
+            const porcentajeValidos = (i / 1000) * 100;
+
+           
+            const resultadosLabel = document.getElementById("resultados");
+            resultadosLabel.innerHTML = `
+                Lanzamientos válidos: ${i}<br>
+                Porcentaje de lanzamientos válidos: ${porcentajeValidos.toFixed(2)} %
+            `;
+        }
+    </script>
+</body>
+</html>
